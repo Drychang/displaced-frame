@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seeing Through the Displaced Frame</title>
+<meta name="description" content="Privileged noise distillation for vision-force precision assembly. A student policy that keeps 92% to 99% success under pose error where state-based policies collapse.">
+
+<meta property="og:title" content="Seeing Through the Displaced Frame">
+<meta property="og:description" content="Privileged noise distillation for vision-force precision assembly.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap">
+
+<style>
+:root{
+  --ink:#131a21;
+  --ink-2:#44545f;
+  --ink-3:#6b7d89;
+  --rule:#dfe5ea;
+  --bg:#ffffff;
+  --bg-2:#f5f8fa;
+  --bg-3:#eaf0f4;
+  /* the paper's own key: blue is the student and the true pose, vermillion is the believed pose */
+  --blue:#0072b2;
+  --blue-soft:#e3f0f8;
+  --verm:#d55e00;
+  --verm-soft:#fbeade;
+  --good:#1b7f5a;
+  --shadow:0 1px 2px rgba(19,26,33,.05),0 8px 24px rgba(19,26,33,.06);
+  --maxw:920px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8eef3;
+    --ink-2:#a9bac6;
+    --ink-3:#7d8f9c;
+    --rule:#2a3540;
+    --bg:#10161b;
+    --bg-2:#161e25;
+    --bg-3:#1d272f;
+    --blue:#4ea6dd;
+    --blue-soft:#14293a;
+    --verm:#f08340;
+    --verm-soft:#33200f;
+    --good:#4cb98a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8eef3; --ink-2:#a9bac6; --ink-3:#7d8f9c; --rule:#2a3540;
+  --bg:#10161b; --bg-2:#161e25; --bg-3:#1d272f;
+  --blue:#4ea6dd; --blue-soft:#14293a; --verm:#f08340; --verm-soft:#33200f; --good:#4cb98a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 16px}
+a{color:var(--blue); text-decoration:none}
+a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible{outline:2px solid var(--blue); outline-offset:3px; border-radius:3px}
+
+/* ---------- hero ---------- */
+header{
+  padding:56px 0 34px;
+  border-bottom:1px solid var(--rule);
+  background:linear-gradient(180deg,var(--bg-2),var(--bg));
+}
+.venue{
+  font-size:12.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--blue); margin:0 0 16px;
+}
+h1{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-size:clamp(30px,5.2vw,46px); line-height:1.15; font-weight:700;
+  margin:0 0 6px; letter-spacing:-.015em; text-wrap:balance;
+}
+.sub{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-size:clamp(18px,2.8vw,23px); line-height:1.3; font-weight:400;
+  color:var(--ink-2); margin:0 0 26px; text-wrap:balance;
+}
+
+/* AUTHORS — anonymous while the paper is under double-blind review.
+   After acceptance, replace the .anon block with the .authors block below it. */
+.anon{
+  display:inline-flex; align-items:center; gap:9px; flex-wrap:wrap;
+  padding:9px 15px; border-radius:7px;
+  background:var(--bg-3); border:1px solid var(--rule);
+  font-size:15px; color:var(--ink-2); margin-bottom:26px;
+}
+.anon b{color:var(--ink); font-weight:600}
+.authors{display:none; font-size:17px; margin:0 0 6px}
+.affil{display:none; font-size:15px; color:var(--ink-3); margin:0 0 26px}
+
+.links{display:flex; flex-wrap:wrap; gap:10px}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 17px; border-radius:8px; font-size:15px; font-weight:600;
+  border:1px solid var(--rule); background:var(--bg); color:var(--ink);
+  box-shadow:var(--shadow); transition:transform .12s ease, border-color .12s ease;
+}
+.btn:hover{text-decoration:none; transform:translateY(-1px); border-color:var(--blue)}
+.btn.primary{background:var(--blue); border-color:var(--blue); color:#fff}
+.btn.primary:hover{border-color:var(--blue)}
+.btn svg{width:16px; height:16px; flex:none}
+.btn[aria-disabled="true"]{opacity:.5; pointer-events:none}
+
+/* ---------- sections ---------- */
+section{padding:44px 0; border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+h2{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-size:26px; font-weight:600; margin:0 0 6px; letter-spacing:-.01em;
+}
+.lede{color:var(--ink-3); font-size:15.5px; margin:0 0 22px}
+p{margin:0 0 16px}
+
+figure{margin:0}
+figure img{
+  display:block; width:100%; height:auto; border-radius:10px;
+  border:1px solid var(--rule); background:#fff;
+}
+figcaption{font-size:14.5px; color:var(--ink-3); margin-top:11px; line-height:1.55}
+video{
+  display:block; width:100%; border-radius:10px;
+  border:1px solid var(--rule); background:#000; box-shadow:var(--shadow);
+}
+
+.abstract{
+  background:var(--bg-2); border:1px solid var(--rule);
+  border-left:3px solid var(--blue);
+  border-radius:0 10px 10px 0; padding:22px 24px;
+}
+.abstract p{margin:0; font-size:16.5px; line-height:1.72; color:var(--ink-2)}
+.abstract p b{color:var(--ink); font-weight:600}
+
+/* key-number strip */
+.nums{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px;
+  margin:0 0 26px;
+}
+.num{
+  background:var(--bg-2); border:1px solid var(--rule); border-radius:10px;
+  padding:16px 17px;
+}
+.num .v{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-size:31px; font-weight:700; line-height:1.05; letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.num .v.us{color:var(--blue)}
+.num .v.them{color:var(--verm)}
+.num .k{font-size:13.5px; color:var(--ink-3); margin-top:5px; line-height:1.45}
+
+/* tables */
+.tw{overflow-x:auto; margin:0 0 12px; -webkit-overflow-scrolling:touch}
+table{border-collapse:collapse; width:100%; min-width:520px; font-size:15px}
+caption{text-align:left; font-size:14.5px; color:var(--ink-3); padding-bottom:10px; line-height:1.55}
+th,td{padding:8px 12px; text-align:right; border-bottom:1px solid var(--rule); font-variant-numeric:tabular-nums}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left; font-variant-numeric:normal}
+thead th{
+  font-size:12.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--ink-3); border-bottom:1.5px solid var(--rule);
+}
+tbody tr.ours{background:var(--blue-soft)}
+tbody tr.ours td{font-weight:600; color:var(--ink)}
+tbody tr.grp td{border-top:1.5px solid var(--rule)}
+td.task{font-weight:600}
+.pill{
+  display:inline-block; padding:1px 8px; border-radius:99px;
+  font-size:12px; font-weight:600; letter-spacing:.03em;
+}
+.pill.us{background:var(--blue-soft); color:var(--blue)}
+.pill.them{background:var(--verm-soft); color:var(--verm)}
+
+/* two-up */
+.two{display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start}
+@media (max-width:720px){ .two{grid-template-columns:1fr} }
+
+ul.clean{margin:0 0 16px; padding-left:20px}
+ul.clean li{margin-bottom:9px}
+
+pre{
+  background:var(--bg-2); border:1px solid var(--rule); border-radius:10px;
+  padding:16px 18px; overflow-x:auto; margin:0;
+  font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:13px; line-height:1.6; color:var(--ink-2);
+}
+footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
+.note{
+  background:var(--verm-soft); border:1px solid var(--verm);
+  border-radius:9px; padding:13px 16px; font-size:14.5px; color:var(--ink-2);
+}
+.note b{color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important; transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="venue">Under review &middot; ICRA 2027</p>
+    <h1>Seeing Through the Displaced Frame</h1>
+    <p class="sub">Privileged Noise Distillation for Vision-Force Precision Assembly</p>
+
+    <!-- ANONYMOUS FOR DOUBLE-BLIND REVIEW. After acceptance: delete this .anon block,
+         then remove the display:none from .authors and .affil in the stylesheet. -->
+    <div class="anon">
+      <span>&#128274;</span>
+      <span><b>Anonymous submission.</b> Author names and affiliations are withheld during double-blind review.</span>
+    </div>
+    <p class="authors">Author One<sup>1</sup> &nbsp; Author Two<sup>1</sup> &nbsp; Author Three<sup>1</sup></p>
+    <p class="affil"><sup>1</sup>Department, Institution</p>
+
+    <div class="links">
+      <a class="btn primary" href="assets/paper.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        Paper (PDF)
+      </a>
+      <a class="btn" href="#video">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 8 6 4-6 4z"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+        Video
+      </a>
+      <a class="btn" href="#results">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
+        Results
+      </a>
+      <!-- Code: the repository exists and is PRIVATE while the paper is under double-blind review.
+           On acceptance, flip it to public on GitHub and delete aria-disabled="true" below,
+           and change the label from "Code (coming soon)" to "Code". -->
+      <a class="btn" href="https://github.com/Drychang/forge-ts-sim" aria-disabled="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+        Code (coming soon)
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="video">
+  <div class="wrap">
+    <h2>Supplementary video</h2>
+    <p class="lede">Simulation and hardware, 2&nbsp;min 48&nbsp;s. No audio.</p>
+    <video controls preload="metadata" poster="assets/scene_real_peg.png" playsinline>
+      <source src="assets/video.mp4" type="video/mp4">
+      Your browser cannot play this video. <a href="assets/video.mp4">Download it instead.</a>
+    </video>
+  </div>
+</section>
+
+<section id="abstract">
+  <div class="wrap">
+    <h2>Abstract</h2>
+    <div class="abstract">
+      <p>
+        Pose error in precision assembly can corrupt not only what a robot observes but also the
+        coordinate frame in which it acts. On the FORGE benchmark, the official state-based policy
+        succeeds in 97% to 99% of episodes with the true pose but only 32% to 60% at the benchmark's
+        &sigma;&nbsp;=&nbsp;5&nbsp;mm pose-noise setting. The same estimated pose enters the observation
+        and anchors the <b>action frame</b>, making the offset unidentifiable from proprioceptive state
+        alone before contact. We supply this missing information during training in two ways. A
+        privileged teacher observes the offset in simulation, while clean demonstrations can instead be
+        relabelled into the displaced frame in closed form. The deployed student is trained with
+        behaviour cloning followed by one DAgger round and receives only noisy state, a raw wrench
+        window, and two RGB cameras at test time. On the unmodified FORGE tasks, the teacher-route
+        student maintains 92% to 99% success across &sigma;&nbsp;=&nbsp;0 to 5&nbsp;mm, while six
+        non-privileged baselines fall to 2% to 80%. A matched behaviour-cloning experiment isolates the
+        source of this robustness. With the same student architecture, data budget, and training
+        procedure, demonstrations generated without offset access yield only 31.5% success at
+        &sigma;&nbsp;=&nbsp;5&nbsp;mm, whereas privileged and relabelled demonstrations reach 88.7% and
+        95.8%. Deployed zero-shot on a Franka, the student reaches 83.3% pooled success at
+        &sigma;&nbsp;=&nbsp;5&nbsp;mm against 34.4% for the strongest state-based policy.
+        <b>Deployable sensing alone is insufficient. Robustness requires supervision that encodes
+        compensation for the latent frame offset.</b>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <h2>The displaced action frame</h2>
+    <p class="lede">Why a pose estimate that is 5&nbsp;mm off is worse than it sounds.</p>
+    <p>
+      The estimated fixture pose does two jobs at once. It enters the observation, and it anchors the
+      frame the actions are expressed in. A policy that sees only proprioceptive state therefore cannot
+      identify the offset before contact: every signal it has is already expressed in the displaced
+      frame, so nothing in its own state reveals that the frame has moved. The peg's hole leaves
+      0.114&nbsp;mm of clearance, and at &sigma;&nbsp;=&nbsp;5&nbsp;mm the believed hole barely overlaps
+      the real one.
+    </p>
+    <figure>
+      <img src="assets/fig_displaced_frame.png" alt="Diagram: the true hole at p-star and the believed hole at p-hat, separated by epsilon. The plug descends in the believed frame and misses.">
+      <figcaption>
+        The offset <span class="pill them">&epsilon;</span> displaces both the observation and the
+        commanded descent. The robot acts correctly in a frame that is in the wrong place.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <h2>Method</h2>
+    <p class="lede">Put the offset into the training signal, then take it away at test time.</p>
+    <div class="two" style="margin-bottom:22px">
+      <div>
+        <p style="margin-bottom:10px"><b>Two routes to the same supervision</b></p>
+        <ul class="clean">
+          <li>A <b>privileged teacher</b> observes &epsilon; in simulation and acts through it.</li>
+          <li>Or clean demonstrations are <b>relabelled</b> into the displaced frame in closed form.</li>
+        </ul>
+        <p>Either route leaves the compensation present in the training data.</p>
+      </div>
+      <div>
+        <p style="margin-bottom:10px"><b>What the deployed student gets</b></p>
+        <ul class="clean">
+          <li>Noisy state, no access to &epsilon;</li>
+          <li>A raw wrench window</li>
+          <li>Two RGB cameras, fused into one action at 15&nbsp;Hz</li>
+        </ul>
+        <p>Behaviour cloning followed by one DAgger round. No privileged input at test time.</p>
+      </div>
+    </div>
+    <figure>
+      <img src="assets/fig_method.png" alt="Architecture: privileged teacher and closed-form relabelling produce demonstrations; the student fuses noisy state, a force window and two RGB cameras into an action at 15 Hz; the same network deploys on a Franka.">
+      <figcaption>The same network and the same sensing run on a Franka Panda, zero-shot, with no real-world data and no fine-tuning.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <h2>Results</h2>
+    <p class="lede">Three unmodified FORGE tasks in simulation, then zero-shot on hardware.</p>
+
+    <div class="nums">
+      <div class="num"><div class="v us">92&ndash;99%</div><div class="k">student success in simulation, &sigma;&nbsp;=&nbsp;0 to 5&nbsp;mm</div></div>
+      <div class="num"><div class="v them">32&ndash;60%</div><div class="k">official state-based policy at &sigma;&nbsp;=&nbsp;5&nbsp;mm</div></div>
+      <div class="num"><div class="v us">83.3%</div><div class="k">hardware, pooled, &sigma;&nbsp;=&nbsp;5&nbsp;mm</div></div>
+      <div class="num"><div class="v them">34.4%</div><div class="k">strongest state-based policy, same trials</div></div>
+    </div>
+
+    <div class="tw">
+      <table>
+        <caption>
+          <b>Simulation.</b> Success rate (%) across the noise spectrum, three seeds, n&nbsp;=&nbsp;256 per cell.
+          Cells report dynamics randomisation on&nbsp;/&nbsp;off. T-B is the privileged oracle, which the
+          student is not given at test time.
+        </caption>
+        <thead>
+          <tr><th>Task</th><th>Policy</th><th>0&nbsp;mm</th><th>1&nbsp;mm</th><th>2.5&nbsp;mm</th><th>5&nbsp;mm</th></tr>
+        </thead>
+        <tbody>
+          <tr class="grp"><td class="task" rowspan="4">peg</td><td>T-A official baseline</td><td>98.7 / 98.2</td><td>97.3 / 94.7</td><td>73.7 / 74.5</td><td>31.8 / 33.3</td></tr>
+          <tr><td>T-A+ noise-augmented</td><td>84.1 / 77.3</td><td>78.0 / 75.1</td><td>58.7 / 56.2</td><td>29.9 / 25.8</td></tr>
+          <tr><td>T-B privileged (oracle)</td><td>99.3 / 96.6</td><td>99.3 / 96.7</td><td>99.7 / 97.5</td><td>99.3 / 96.6</td></tr>
+          <tr class="ours"><td>student (ours)</td><td>98.3 / 96.2</td><td>98.6 / 96.2</td><td>98.3 / 95.4</td><td>96.6 / 91.8</td></tr>
+
+          <tr class="grp"><td class="task" rowspan="4">gear</td><td>T-A official baseline</td><td>98.6 / 100.0</td><td>97.5 / 99.2</td><td>86.9 / 90.6</td><td>49.9 / 53.8</td></tr>
+          <tr><td>T-A+ noise-augmented</td><td>94.9 / 99.7</td><td>94.7 / 99.7</td><td>92.1 / 99.3</td><td>77.9 / 90.0</td></tr>
+          <tr><td>T-B privileged (oracle)</td><td>98.7 / 99.7</td><td>99.0 / 100.0</td><td>98.2 / 99.7</td><td>98.2 / 98.8</td></tr>
+          <tr class="ours"><td>student (ours)</td><td>98.8 / 98.4</td><td>99.2 / 97.8</td><td>99.3 / 96.5</td><td>98.2 / 96.5</td></tr>
+
+          <tr class="grp"><td class="task" rowspan="4">nut</td><td>T-A official baseline</td><td>97.4 / 97.8</td><td>96.1 / 96.9</td><td>87.4 / 87.9</td><td>60.4 / 64.3</td></tr>
+          <tr><td>T-A+ noise-augmented</td><td>89.7 / 88.4</td><td>88.8 / 88.3</td><td>83.7 / 85.2</td><td>73.0 / 71.2</td></tr>
+          <tr><td>T-B privileged (oracle)</td><td>99.2 / 99.7</td><td>99.5 / 99.9</td><td>99.9 / 99.6</td><td>99.2 / 99.9</td></tr>
+          <tr class="ours"><td>student (ours)</td><td>99.1 / 98.8</td><td>99.0 / 98.8</td><td>99.0 / 98.6</td><td>96.5 / 95.1</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      At 5&nbsp;mm the improvement over the official baseline reaches +64.8 points on peg, +48.3 on gear
+      and +36.1 on nut. Measured as the fraction of baseline failures eliminated, the student removes
+      91.1% to 96.4% of them. The recovered oracle gap is 96.0% on peg, 100% on gear and 93.0% on nut.
+    </p>
+
+    <div class="tw" style="margin-top:30px">
+      <table>
+        <caption>
+          <b>Hardware.</b> Franka Panda, printed parts, dark work surface, 30 trials per cell. Transfer
+          is zero-shot: the simulation checkpoint runs unchanged. T-A+ is the noise-augmented state
+          baseline without cameras. Pooled rows combine all three tasks (n&nbsp;=&nbsp;90).
+        </caption>
+        <thead>
+          <tr><th>Task</th><th>Policy</th><th>0&nbsp;mm</th><th>1&nbsp;mm</th><th>2.5&nbsp;mm</th><th>5&nbsp;mm</th></tr>
+        </thead>
+        <tbody>
+          <tr class="grp"><td class="task" rowspan="2">peg</td><td>T-A+</td><td>86.7</td><td>83.3</td><td>63.3</td><td>20.0</td></tr>
+          <tr class="ours"><td>student (ours)</td><td>90.0</td><td>93.3</td><td>86.7</td><td>80.0</td></tr>
+          <tr class="grp"><td class="task" rowspan="2">gear</td><td>T-A+</td><td>90.0</td><td>90.0</td><td>73.3</td><td>36.7</td></tr>
+          <tr class="ours"><td>student (ours)</td><td>93.3</td><td>90.0</td><td>83.3</td><td>86.7</td></tr>
+          <tr class="grp"><td class="task" rowspan="2">nut</td><td>T-A+</td><td>90.0</td><td>83.3</td><td>70.0</td><td>46.7</td></tr>
+          <tr class="ours"><td>student (ours)</td><td>93.3</td><td>90.0</td><td>86.7</td><td>83.3</td></tr>
+          <tr class="grp"><td class="task" rowspan="2">pooled</td><td>T-A+</td><td>88.9</td><td>85.6</td><td>68.9</td><td>34.4</td></tr>
+          <tr class="ours"><td>student (ours)</td><td>92.2</td><td>91.1</td><td>85.6</td><td>83.3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The margin grows with pose error: 17 points at 2.5&nbsp;mm (Fisher's exact test,
+      p&nbsp;=&nbsp;0.012) and 49 points at 5&nbsp;mm (Wilson 95% intervals [74,&nbsp;90] versus
+      [25,&nbsp;45], p&nbsp;&lt;&nbsp;10<sup>&minus;10</sup>), with the largest task-level gap on peg,
+      80.0% against 20.0%.
+    </p>
+
+    <figure style="margin-top:30px">
+      <img src="assets/fig_tasks.png" alt="Initial and goal states of peg insertion, gear meshing and nut threading, in simulation and on hardware.">
+      <figcaption>Initial and goal states of the three tasks, in simulation and on the Franka.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="ablation">
+  <div class="wrap">
+    <h2>Where the robustness comes from</h2>
+    <p class="lede">A matched behaviour-cloning experiment, same architecture and data budget.</p>
+    <div class="nums">
+      <div class="num"><div class="v them">31.5%</div><div class="k">demonstrations generated <b>without</b> offset access</div></div>
+      <div class="num"><div class="v us">88.7%</div><div class="k">privileged demonstrations</div></div>
+      <div class="num"><div class="v us">95.8%</div><div class="k">closed-form relabelled demonstrations</div></div>
+    </div>
+    <p>
+      All three share the student's architecture, data budget and training procedure, and all three are
+      evaluated at &sigma;&nbsp;=&nbsp;5&nbsp;mm. The only difference is whether the demonstrations
+      encode compensation for the offset. Adding cameras and force to a policy is not what produces the
+      robustness. The supervision is.
+    </p>
+  </div>
+</section>
+
+<section id="limitations">
+  <div class="wrap">
+    <h2>What this does not solve</h2>
+    <ul class="clean">
+      <li><b>Unseen geometries.</b> On 70 AutoMate plug and socket pairs in the unmodified peg environment, at 2.5&nbsp;mm of pose error the student succeeds in 4.6% of trials against 18.4% for the noise-augmented state baseline. Robustness to pose error does not imply cross-geometry generalisation.</li>
+      <li><b>Scene composition.</b> On peg, replacing the dark work surface with a light one takes hardware success from 93% to 25%. Photometric augmentation narrows the appearance gap, it does not close it.</li>
+      <li><b>Camera calibration.</b> Increasing camera extrinsic error from 5&nbsp;mm and 1&nbsp;degree to 10&nbsp;mm and 2&nbsp;degrees roughly halves gear success.</li>
+      <li><b>Sample size.</b> The main results are simulated. The hardware sweep is 30 trials per cell, and several cells elsewhere are single-seed, marked as such in the paper.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="bibtex">
+  <div class="wrap">
+    <h2>BibTeX</h2>
+    <p class="lede">Anonymous entry for the review period. Update after acceptance.</p>
+<pre>@inproceedings{anonymous2027displaced,
+  title     = {Seeing Through the Displaced Frame: Privileged Noise
+               Distillation for Vision-Force Precision Assembly},
+  author    = {Anonymous},
+  booktitle = {Under review, IEEE International Conference on
+               Robotics and Automation (ICRA)},
+  year      = {2027}
+}</pre>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="note">
+      <b>Under double-blind review.</b> Author names, affiliations and funding are withheld and will be
+      added in the camera-ready version. Simulation uses Isaac Lab and the three unmodified FORGE tasks.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
