@@ -221,41 +221,27 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
 .opt[aria-pressed="true"]{background:var(--blue); border-color:var(--blue); color:#fff}
 .opt.them[aria-pressed="true"]{background:var(--verm); border-color:var(--verm)}
 
-.explorer{display:grid; grid-template-columns:1fr 290px; gap:20px; align-items:start}
-@media (max-width:760px){ .explorer{grid-template-columns:1fr} }
-.ex-stage{position:relative; background:#000; border:1px solid var(--rule); border-radius:10px; overflow:hidden}
+.ex-stage{
+  position:relative; background:#000; border:1px solid var(--rule);
+  border-radius:10px; overflow:hidden;
+}
 .ex-stage video{display:block; width:100%; border:0; border-radius:0; background:#000}
 .ex-none{
   position:absolute; inset:0; display:grid; place-items:center;
   color:var(--ink-3); font-size:15px; background:var(--bg-2);
 }
-.ex-side{display:flex; flex-direction:column; gap:14px}
-.ex-cell{background:var(--bg-2); border:1px solid var(--rule); border-radius:10px; padding:14px 16px}
-.ex-cell-v{
-  font-family:"Source Serif 4",Georgia,serif; font-size:30px; font-weight:700;
-  line-height:1.05; font-variant-numeric:tabular-nums; color:var(--blue);
+.ex-eps{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; align-items:center}
+.ex-eps::before{
+  content:"episode"; font-size:12px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-3); margin-right:4px;
 }
-.ex-cell-v.them{color:var(--verm)}
-.ex-cell-k{font-size:13px; color:var(--ink-3); margin-top:4px; line-height:1.4}
-.ex-facts{margin:0; display:grid; grid-template-columns:auto 1fr; gap:5px 12px; font-size:14px}
-.ex-facts dt{color:var(--ink-3)}
-.ex-facts dd{margin:0; color:var(--ink); font-variant-numeric:tabular-nums; text-align:right}
-.ex-facts dd.mono{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:12px}
-.ex-facts dd.good{color:var(--good); font-weight:600}
-.ex-facts dd.bad{color:var(--verm); font-weight:600}
-.ex-eps{display:flex; flex-wrap:wrap; gap:5px}
 .ep{
-  appearance:none; cursor:pointer; font:inherit; font-size:12.5px; font-weight:600;
-  width:30px; height:30px; border-radius:6px; border:1px solid var(--rule);
+  appearance:none; cursor:pointer; font:inherit; font-size:13.5px; font-weight:600;
+  min-width:36px; padding:7px 10px; border-radius:6px; border:1px solid var(--rule);
   background:var(--bg); color:var(--ink-3); font-variant-numeric:tabular-nums;
 }
 .ep:hover{border-color:var(--blue); color:var(--ink)}
 .ep[aria-pressed="true"]{border-color:var(--blue); background:var(--blue-soft); color:var(--blue)}
-.ep.ok::after{content:""; display:block; width:5px; height:5px; margin:2px auto 0;
-  border-radius:50%; background:var(--good)}
-.ep.no::after{content:""; display:block; width:5px; height:5px; margin:2px auto 0;
-  border-radius:50%; background:var(--verm)}
-.ex-note{font-size:13px; color:var(--ink-3); line-height:1.5; margin:2px 0 0}
 .ex-foot{font-size:14px; color:var(--ink-3); margin:16px 0 0; line-height:1.6}
 
 @media (prefers-reduced-motion:reduce){
@@ -267,7 +253,6 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
 
 <header>
   <div class="wrap">
-    <p class="venue">Under review &middot; ICRA 2027</p>
     <h1>Seeing Through the Displaced Frame</h1>
     <p class="sub">Privileged Noise Distillation for Vision-Force Precision Assembly</p>
 
@@ -497,29 +482,11 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
       </div>
     </div>
 
-    <div class="explorer">
-      <div class="ex-stage">
-        <video id="exVideo" controls autoplay muted loop playsinline preload="metadata"></video>
-        <div class="ex-none" id="exNone" hidden>No clips for this combination.</div>
-      </div>
-      <aside class="ex-side">
-        <div class="ex-cell">
-          <div class="ex-cell-v" id="exCell">&mdash;</div>
-          <div class="ex-cell-k">episodes succeeded in this cell</div>
-        </div>
-        <dl class="ex-facts">
-          <dt>this episode</dt><dd id="exOutcome">&mdash;</dd>
-          <dt>offset &epsilon; drawn</dt><dd id="exEps">&mdash;</dd>
-          <dt>&epsilon; components</dt><dd id="exEpsXYZ" class="mono">&mdash;</dd>
-          <dt>control steps</dt><dd id="exSteps">&mdash;</dd>
-        </dl>
-        <div class="ex-eps" id="exList" role="group" aria-label="episode"></div>
-        <p class="ex-note">
-          &sigma; is the setting. &epsilon; is what that setting actually drew for this episode,
-          and it is different every time.
-        </p>
-      </aside>
+    <div class="ex-stage">
+      <video id="exVideo" controls autoplay muted loop playsinline preload="metadata"></video>
+      <div class="ex-none" id="exNone" hidden>No clips for this combination.</div>
     </div>
+    <div class="ex-eps" id="exList" role="group" aria-label="episode"></div>
 
     <p class="ex-foot" id="exFoot"></p>
   </div>
@@ -558,14 +525,12 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
 <section id="bibtex">
   <div class="wrap">
     <h2>BibTeX</h2>
-    <p class="lede">Anonymous entry for the review period. Update after acceptance.</p>
-<pre>@inproceedings{anonymous2027displaced,
-  title     = {Seeing Through the Displaced Frame: Privileged Noise
-               Distillation for Vision-Force Precision Assembly},
-  author    = {Anonymous},
-  booktitle = {Under review, IEEE International Conference on
-               Robotics and Automation (ICRA)},
-  year      = {2027}
+    <p class="lede">Anonymous entry while the paper is under review. Update on acceptance.</p>
+<pre>@misc{anonymous_displaced_frame,
+  title  = {Seeing Through the Displaced Frame: Privileged Noise
+            Distillation for Vision-Force Precision Assembly},
+  author = {Anonymous},
+  note   = {Under review}
 }</pre>
   </div>
 </section>
@@ -614,35 +579,20 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
     const v = $("exVideo"), none = $("exNone"), list = $("exList");
     list.textContent = "";
     if (!cell || !cell.episodes.length) {
-      none.hidden = false; v.removeAttribute("src"); v.load();
-      $("exCell").textContent = "—";
-      ["exOutcome", "exEps", "exEpsXYZ", "exSteps"].forEach(i => {
-        $(i).textContent = "—"; $(i).className = $(i).classList.contains("mono") ? "mono" : "";
-      });
+      none.hidden = false;
+      v.removeAttribute("src");
+      v.load();
       return;
     }
     none.hidden = true;
-    const them = sel.policy === "forge";
-    const cv = $("exCell");
-    cv.textContent = `${cell.k} of ${cell.n}`;
-    cv.className = "ex-cell-v" + (them ? " them" : "");
-
     sel.ep = Math.min(sel.ep, cell.episodes.length - 1);
     cell.episodes.forEach((e, i) => {
-      const b = button("ep", String(i + 1), i === sel.ep,
-                       () => { sel.ep = i; render(); }, e.success ? "ok" : "no");
-      b.title = e.success ? "succeeded" : "failed";
+      const b = button("ep", String(i + 1), i === sel.ep, () => { sel.ep = i; render(); });
+      b.setAttribute("aria-label", "episode " + (i + 1));
       list.appendChild(b);
     });
-
     const e = cell.episodes[sel.ep];
     if (v.getAttribute("src") !== e.scene) { v.setAttribute("src", e.scene); v.load(); }
-    const out = $("exOutcome");
-    out.textContent = e.success ? "succeeded" : "failed";
-    out.className = e.success ? "good" : "bad";
-    $("exEps").textContent = e.eps_norm_mm.toFixed(2) + " mm";
-    $("exEpsXYZ").textContent = e.eps_mm.map(x => x.toFixed(2)).join(", ");
-    $("exSteps").textContent = e.steps;
   }
 
   fetch("explore/index.json")
