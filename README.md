@@ -1,13 +1,13 @@
 # Project page — Seeing Through the Displaced Frame
 
-Static site for the ICRA 2027 submission. One HTML file plus an `assets/` folder, no build step,
-no dependencies. Total size about 30 MB, well inside GitHub Pages limits.
+Static site for the paper. One HTML file plus an `assets/` folder and the explorer's clips, no
+build step and no dependencies. Total size about 52 MB, well inside GitHub Pages limits.
 
 ```
 index.html
 .nojekyll
 assets/
-    video.mp4                  18.9 MB   supplementary video, 2:48, 720p
+    video.mp4                  11.3 MB   supplementary video, 2:50, 1280x800
     paper.pdf                   8.9 MB
     fig_displaced_frame.png     0.7 MB
     fig_method.png              0.3 MB
@@ -19,22 +19,21 @@ assets/
 
 ## ⚠ Read this before publishing
 
-**The paper is under double-anonymous review.** `main.tex` has `\ANONYMOUS=1`, and the ICRA 2027
-CFP requires double-blind. The page as written contains **no names, no affiliation and no email**,
-and says so on screen.
+**The paper is under double-anonymous review.** `main.tex` has `\ANONYMOUS=1`. The page as written
+carries **no names, no affiliation, no email and no venue**, and says on screen that it is an
+anonymous submission.
 
 Publishing it under `<your-username>.github.io` still ties the work to your GitHub account. That
-is a judgement call you need to make, not a technical one. Three options:
+is a judgement call, not a technical one. Three options:
 
-1. **Wait until acceptance.** Safest. Keep the repo private, publish on the camera-ready date.
-2. **Publish under a fresh account** with a neutral name, e.g. `displaced-frame.github.io`, and do
-   not link it from anywhere that carries your name. This is the usual practice for anonymous
-   project pages during review.
-3. **Publish under your own account now**, accepting that a determined reviewer could connect it.
-   ICRA does not forbid preprints or project pages, but it does ask that authors not actively
-   advertise their identity to reviewers.
+1. **Wait.** Keep the repository private and publish when you are ready.
+2. **Publish under a fresh account** with a neutral name, and do not link it from anywhere that
+   carries your name. This is the usual practice for anonymous project pages during review.
+3. **Publish under your own account now.** The common reading is that a preprint or project page
+   is allowed as long as the authors do not actively advertise it to reviewers, but check the
+   wording your venue actually uses.
 
-Whichever you pick, do not add names until the paper is accepted.
+Whichever you pick, do not add names until you have decided the page should carry them.
 
 ---
 
@@ -81,7 +80,8 @@ Everything that needs changing is marked with a comment in `index.html`.
 <p class="affil"><sup>1</sup>Department, Institution</p>
 ```
 
-**2. Venue line.** Change `Under review · ICRA 2027` in `<p class="venue">` to the accepted venue.
+**2. Venue line.** There is none on the page. To add one, put a `<p class="venue">` back above the
+`<h1>`; the style is still defined.
 
 **3. Footer note.** Delete or rewrite the `<div class="note">` block, which currently explains the
 anonymity.
