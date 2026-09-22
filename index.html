@@ -203,6 +203,61 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
 }
 .note b{color:var(--ink)}
 
+/* ---------- interactive explorer ---------- */
+.pickers{display:flex; flex-wrap:wrap; gap:22px; margin:0 0 20px}
+.pick{display:flex; flex-direction:column; gap:7px}
+.pick-k{
+  font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3);
+}
+.pick-v{display:flex; gap:6px; flex-wrap:wrap}
+.opt{
+  appearance:none; cursor:pointer; font:inherit; font-size:14.5px; font-weight:600;
+  padding:7px 14px; border-radius:7px; border:1px solid var(--rule);
+  background:var(--bg); color:var(--ink-2); font-variant-numeric:tabular-nums;
+  transition:border-color .12s ease, background .12s ease, color .12s ease;
+}
+.opt:hover{border-color:var(--blue); color:var(--ink)}
+.opt[aria-pressed="true"]{background:var(--blue); border-color:var(--blue); color:#fff}
+.opt.them[aria-pressed="true"]{background:var(--verm); border-color:var(--verm)}
+
+.explorer{display:grid; grid-template-columns:1fr 290px; gap:20px; align-items:start}
+@media (max-width:760px){ .explorer{grid-template-columns:1fr} }
+.ex-stage{position:relative; background:#000; border:1px solid var(--rule); border-radius:10px; overflow:hidden}
+.ex-stage video{display:block; width:100%; border:0; border-radius:0; background:#000}
+.ex-none{
+  position:absolute; inset:0; display:grid; place-items:center;
+  color:var(--ink-3); font-size:15px; background:var(--bg-2);
+}
+.ex-side{display:flex; flex-direction:column; gap:14px}
+.ex-cell{background:var(--bg-2); border:1px solid var(--rule); border-radius:10px; padding:14px 16px}
+.ex-cell-v{
+  font-family:"Source Serif 4",Georgia,serif; font-size:30px; font-weight:700;
+  line-height:1.05; font-variant-numeric:tabular-nums; color:var(--blue);
+}
+.ex-cell-v.them{color:var(--verm)}
+.ex-cell-k{font-size:13px; color:var(--ink-3); margin-top:4px; line-height:1.4}
+.ex-facts{margin:0; display:grid; grid-template-columns:auto 1fr; gap:5px 12px; font-size:14px}
+.ex-facts dt{color:var(--ink-3)}
+.ex-facts dd{margin:0; color:var(--ink); font-variant-numeric:tabular-nums; text-align:right}
+.ex-facts dd.mono{font-family:"JetBrains Mono",ui-monospace,monospace; font-size:12px}
+.ex-facts dd.good{color:var(--good); font-weight:600}
+.ex-facts dd.bad{color:var(--verm); font-weight:600}
+.ex-eps{display:flex; flex-wrap:wrap; gap:5px}
+.ep{
+  appearance:none; cursor:pointer; font:inherit; font-size:12.5px; font-weight:600;
+  width:30px; height:30px; border-radius:6px; border:1px solid var(--rule);
+  background:var(--bg); color:var(--ink-3); font-variant-numeric:tabular-nums;
+}
+.ep:hover{border-color:var(--blue); color:var(--ink)}
+.ep[aria-pressed="true"]{border-color:var(--blue); background:var(--blue-soft); color:var(--blue)}
+.ep.ok::after{content:""; display:block; width:5px; height:5px; margin:2px auto 0;
+  border-radius:50%; background:var(--good)}
+.ep.no::after{content:""; display:block; width:5px; height:5px; margin:2px auto 0;
+  border-radius:50%; background:var(--verm)}
+.ex-note{font-size:13px; color:var(--ink-3); line-height:1.5; margin:2px 0 0}
+.ex-foot{font-size:14px; color:var(--ink-3); margin:16px 0 0; line-height:1.6}
+
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important; transition:none!important}
 }
@@ -238,12 +293,9 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
         Results
       </a>
-      <!-- Code: the repository exists and is PRIVATE while the paper is under double-blind review.
-           On acceptance, flip it to public on GitHub and delete aria-disabled="true" below,
-           and change the label from "Code (coming soon)" to "Code". -->
-      <a class="btn" href="https://github.com/Drychang/forge-ts-sim" aria-disabled="true">
+      <a class="btn" href="https://github.com/Drychang/forge-ts-sim">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
-        Code (coming soon)
+        Code
       </a>
     </div>
   </div>
@@ -254,7 +306,7 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
 <section id="video">
   <div class="wrap">
     <h2>Supplementary video</h2>
-    <p class="lede">Simulation and hardware, 2&nbsp;min 48&nbsp;s. No audio.</p>
+    <p class="lede">Simulation and hardware, 2&nbsp;min 50&nbsp;s. No audio.</p>
     <video controls preload="metadata" poster="assets/scene_real_peg.png" playsinline>
       <source src="assets/video.mp4" type="video/mp4">
       Your browser cannot play this video. <a href="assets/video.mp4">Download it instead.</a>
@@ -425,6 +477,54 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
   </div>
 </section>
 
+<section id="explore">
+  <div class="wrap">
+    <h2>Try it yourself</h2>
+    <p class="lede">Pick a task, a noise level and a policy. Every clip is a recorded rollout.</p>
+
+    <div class="pickers" id="pickers">
+      <div class="pick" data-key="task">
+        <span class="pick-k">task</span>
+        <div class="pick-v" role="group" aria-label="task"></div>
+      </div>
+      <div class="pick" data-key="noise">
+        <span class="pick-k">pose noise &sigma;</span>
+        <div class="pick-v" role="group" aria-label="pose noise"></div>
+      </div>
+      <div class="pick" data-key="policy">
+        <span class="pick-k">policy</span>
+        <div class="pick-v" role="group" aria-label="policy"></div>
+      </div>
+    </div>
+
+    <div class="explorer">
+      <div class="ex-stage">
+        <video id="exVideo" controls autoplay muted loop playsinline preload="metadata"></video>
+        <div class="ex-none" id="exNone" hidden>No clips for this combination.</div>
+      </div>
+      <aside class="ex-side">
+        <div class="ex-cell">
+          <div class="ex-cell-v" id="exCell">&mdash;</div>
+          <div class="ex-cell-k">episodes succeeded in this cell</div>
+        </div>
+        <dl class="ex-facts">
+          <dt>this episode</dt><dd id="exOutcome">&mdash;</dd>
+          <dt>offset &epsilon; drawn</dt><dd id="exEps">&mdash;</dd>
+          <dt>&epsilon; components</dt><dd id="exEpsXYZ" class="mono">&mdash;</dd>
+          <dt>control steps</dt><dd id="exSteps">&mdash;</dd>
+        </dl>
+        <div class="ex-eps" id="exList" role="group" aria-label="episode"></div>
+        <p class="ex-note">
+          &sigma; is the setting. &epsilon; is what that setting actually drew for this episode,
+          and it is different every time.
+        </p>
+      </aside>
+    </div>
+
+    <p class="ex-foot" id="exFoot"></p>
+  </div>
+</section>
+
 <section id="ablation">
   <div class="wrap">
     <h2>Where the robustness comes from</h2>
@@ -471,6 +571,100 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
 </section>
 
 </main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const sel = { task: null, noise: null, policy: null, ep: 0 };
+  let DATA = null;
+
+  function cellOf() {
+    return DATA.cells.find(c => c.task === sel.task && c.noise === sel.noise
+                             && c.policy === sel.policy) || null;
+  }
+
+  function button(cls, label, pressed, onClick, extra) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = cls + (extra ? " " + extra : "");
+    b.textContent = label;
+    b.setAttribute("aria-pressed", pressed ? "true" : "false");
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  function drawPickers() {
+    const row = (key) => document.querySelector(`.pick[data-key="${key}"] .pick-v`);
+    const t = row("task"); t.textContent = "";
+    DATA.tasks.forEach(x => t.appendChild(
+      button("opt", x.name, sel.task === x.key, () => { sel.task = x.key; sel.ep = 0; render(); })));
+    const n = row("noise"); n.textContent = "";
+    DATA.noises.forEach(v => n.appendChild(
+      button("opt", v + " mm", sel.noise === v, () => { sel.noise = v; sel.ep = 0; render(); })));
+    const p = row("policy"); p.textContent = "";
+    DATA.policies.forEach(x => p.appendChild(
+      button("opt", x.name, sel.policy === x.key,
+             () => { sel.policy = x.key; sel.ep = 0; render(); },
+             x.key === "forge" ? "them" : "")));
+  }
+
+  function render() {
+    drawPickers();
+    const cell = cellOf();
+    const v = $("exVideo"), none = $("exNone"), list = $("exList");
+    list.textContent = "";
+    if (!cell || !cell.episodes.length) {
+      none.hidden = false; v.removeAttribute("src"); v.load();
+      $("exCell").textContent = "—";
+      ["exOutcome", "exEps", "exEpsXYZ", "exSteps"].forEach(i => {
+        $(i).textContent = "—"; $(i).className = $(i).classList.contains("mono") ? "mono" : "";
+      });
+      return;
+    }
+    none.hidden = true;
+    const them = sel.policy === "forge";
+    const cv = $("exCell");
+    cv.textContent = `${cell.k} of ${cell.n}`;
+    cv.className = "ex-cell-v" + (them ? " them" : "");
+
+    sel.ep = Math.min(sel.ep, cell.episodes.length - 1);
+    cell.episodes.forEach((e, i) => {
+      const b = button("ep", String(i + 1), i === sel.ep,
+                       () => { sel.ep = i; render(); }, e.success ? "ok" : "no");
+      b.title = e.success ? "succeeded" : "failed";
+      list.appendChild(b);
+    });
+
+    const e = cell.episodes[sel.ep];
+    if (v.getAttribute("src") !== e.scene) { v.setAttribute("src", e.scene); v.load(); }
+    const out = $("exOutcome");
+    out.textContent = e.success ? "succeeded" : "failed";
+    out.className = e.success ? "good" : "bad";
+    $("exEps").textContent = e.eps_norm_mm.toFixed(2) + " mm";
+    $("exEpsXYZ").textContent = e.eps_mm.map(x => x.toFixed(2)).join(", ");
+    $("exSteps").textContent = e.steps;
+  }
+
+  fetch("explore/index.json")
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(d => {
+      DATA = d;
+      // the clip paths in the index are relative to the folder the index sits in
+      DATA.cells.forEach(c => c.episodes.forEach(e => {
+        e.scene = "explore/" + e.scene;
+        if (e.wrist) e.wrist = "explore/" + e.wrist;
+      }));
+      sel.task = DATA.tasks[0].key;
+      sel.noise = DATA.noises[DATA.noises.length - 1];
+      sel.policy = DATA.policies[0].key;
+      $("exFoot").textContent = DATA.note;
+      render();
+    })
+    .catch(() => {
+      document.getElementById("explore").hidden = true;
+    });
+})();
+</script>
 
 <footer>
   <div class="wrap">
