@@ -90,18 +90,6 @@ h1{
   color:var(--ink-2); margin:0 0 26px; text-wrap:balance;
 }
 
-/* AUTHORS — anonymous while the paper is under double-blind review.
-   After acceptance, replace the .anon block with the .authors block below it. */
-.anon{
-  display:inline-flex; align-items:center; gap:9px; flex-wrap:wrap;
-  padding:9px 15px; border-radius:7px;
-  background:var(--bg-3); border:1px solid var(--rule);
-  font-size:15px; color:var(--ink-2); margin-bottom:26px;
-}
-.anon b{color:var(--ink); font-weight:600}
-.authors{display:none; font-size:17px; margin:0 0 6px}
-.affil{display:none; font-size:15px; color:var(--ink-3); margin:0 0 26px}
-
 .links{display:flex; flex-wrap:wrap; gap:10px}
 .btn{
   display:inline-flex; align-items:center; gap:8px;
@@ -256,15 +244,6 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
   <div class="wrap">
     <h1>Seeing Through the Displaced Frame</h1>
     <p class="sub">Privileged Noise Distillation for Vision-Force Precision Assembly</p>
-
-    <!-- ANONYMOUS FOR DOUBLE-BLIND REVIEW. After acceptance: delete this .anon block,
-         then remove the display:none from .authors and .affil in the stylesheet. -->
-    <div class="anon">
-      <span>&#128274;</span>
-      <span><b>Anonymous submission.</b> Author names and affiliations are withheld during double-blind review.</span>
-    </div>
-    <p class="authors">Author One<sup>1</sup> &nbsp; Author Two<sup>1</sup> &nbsp; Author Three<sup>1</sup></p>
-    <p class="affil"><sup>1</sup>Department, Institution</p>
 
     <div class="links">
       <a class="btn primary" href="assets/paper.pdf">
@@ -619,10 +598,7 @@ footer{padding:34px 0 52px; color:var(--ink-3); font-size:14.5px}
 
 <footer>
   <div class="wrap">
-    <div class="note">
-      <b>Under double-blind review.</b> Author names, affiliations and funding are withheld and will be
-      added in the camera-ready version. Simulation uses Isaac Lab and the three unmodified FORGE tasks.
-    </div>
+    <p>Simulation uses Isaac Lab and the three unmodified FORGE tasks.</p>
   </div>
 </footer>
 
